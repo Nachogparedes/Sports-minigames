@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Minigames</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game">
+    <h1>Sports Minigames</h1>
+    <div id="sport-selection">
+      <button onclick="selectSport('football')">Fútbol (Penaltis)</button>
+      <button onclick="selectSport('tennis')">Tenis (Servicios)</button>
+      <button onclick="selectSport('basketball')">Baloncesto (Lanzamientos)</button>
+      <button onclick="selectSport('padel')">Pádel (Saque)</button>
+      <button onclick="selectSport('tabletennis')">Tenis de Mesa (Saque)</button>
+      <button onclick="selectSport('golf')">Golf (Putts)</button>
+      <button onclick="selectSport('baseball')">Béisbol (Bateo)</button>
+      <button onclick="selectSport('cricket')">Críquet (Bateo)</button>
+    </div>
+    <div id="mode-selection" style="display:none;">
+      <button onclick="startGame('solo')">Solo</button>
+      <button onclick="startGame('pair')">Pareja</button>
+      <button onclick="startGame('vs-machine')">Contra la máquina</button>
+    </div>
+    <div id="game-board" style="display:none;">
+      <div id="status"></div>
+      <div id="shooting-controls">
+        <label for="direction">Dirección:</label>
+        <select id="direction">
+          <option value="left">Izquierda</option>
+          <option value="center">Centro</option>
+          <option value="right">Derecha</option>
+        </select>
+        <label for="height">Altura:</label>
+        <select id="height">
+          <option value="low">Baja</option>
+          <option value="middle">Media</option>
+          <option value="high">Alta</option>
+        </select>
+        <button onclick="shoot()">Disparar</button>
+      </div>
+      <div id="results"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
