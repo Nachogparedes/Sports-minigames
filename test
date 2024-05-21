@@ -47,3 +47,164 @@
   <script src="script.js"></script>
 </body>
 </html>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+#game {
+  text-align: center;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#game-board {
+  margin-top: 20px;
+}
+
+#shooting-controls {
+  margin-top: 20px;
+}
+
+#results {
+  margin-top: 20px;
+}
+
+.goal {
+  color: green;
+}
+
+.miss {
+  color: red;
+}
+let sport = 'football';
+let mode = 'solo';
+let playerScore = 0;
+let opponentScore = 0;
+let attempts = 0;
+const maxAttempts = 5;
+
+function selectSport(selectedSport) {
+  sport = selectedSport;
+  document.getElementById('sport-selection').style.display = 'none';
+  document.getElementById('mode-selection').style.display = 'block';
+}
+
+function startGame(selectedMode) {
+  mode = selectedMode;
+  playerScore = 0;
+  opponentScore = 0;
+  attempts = 0;
+  document.getElementById('mode-selection').style.display = 'none';
+  document.getElementById('game-board').style.display = 'block';
+  document.getElementById('status').innerText = '';
+  document.getElementById('results').innerHTML = '';
+  updateControls();
+}
+
+function updateControls() {
+  const controls = document.getElementById('shooting-controls');
+  switch (sport) {
+    case 'football':
+      controls.innerHTML = `
+        <label for="direction">Dirección:</label>
+        <select id="direction">
+          <option value="left">Izquierda</option>
+          <option value="center">Centro</option>
+          <option value="right">Derecha</option>
+        </select>
+        <label for="height">Altura:</label>
+        <select id="height">
+          <option value="low">Baja</option>
+          <option value="middle">Media</option>
+          <option value="high">Alta</option>
+        </select>
+        <button onclick="shoot()">Disparar</button>`;
+      break;
+    case 'tennis':
+      controls.innerHTML = `
+        <label for="direction">Dirección:</label>
+        <select id="direction">
+          <option value="left">Izquierda</option>
+          <option value="center">Centro</option>
+          <option value="right">Derecha</option>
+        </select>
+        <label for="power">Potencia:</label>
+        <select id="power">
+          <option value="low">Baja</option>
+          <option value="middle">Media</option>
+          <option value="high">Alta</option>
+        </select>
+        <button onclick="shoot()">Servir</button>`;
+      break;
+    // Add similar controls for other sports
+    default:
+      controls.innerHTML = '';
+  }
+}
+
+function shoot() {
+  const direction = document.getElementById('direction').value;
+  const height = document.getElementById('height') ? document.getElementById('height').value : '';
+  const power = document.getElementById('power') ? document.getElementById('power').value : '';
+
+  const playerShot = { direction, height, power };
+  const goalieGuess = generateGoalieGuess();
+
+  const result = getResult(playerShot, goalieGuess);
+
+  if (result) {
+    playerScore++;
+    document.getElementById('results').innerHTML += `<p class="goal">Gol! (${direction}, ${height})</p>`;
+  } else {
+    document.getElementById('results').innerHTML += `<p class="miss">Parado! (${direction}, ${height})</p>`;
+  }
+
+  attempts++;
+
+  if (mode === 'vs-machine') {
+    const machineShot = generateMachineShot();
+    const playerGuess = generateGoalieGuess(); // Simulate player as goalie
+
+    const machineResult = getResult(machineShot, playerGuess);
+    if (machineResult) {
+      opponentScore++;
+      document.getElementById('results').innerHTML += `<p class="goal">La máquina anotó! (${machineShot.direction}, ${machineShot.height})</p>`;
+    } else {
+      document.getElementById('results').innerHTML += `<p class="miss">La máquina falló! (${machineShot.direction}, ${machineShot.height})</p>`;
+    }
+  }
+
+  if (attempts >= maxAttempts) {
+    endGame();
+  }
+}
+
+function generateGoalieGuess() {
+  const directions = ['left', 'center', 'right'];
+  const heights = ['low', 'middle', 'high'];
+  return {
+    direction: directions[Math.floor(Math.random() * directions.length)],
+    height: heights[Math.floor(Math.random() * heights.length)],
+    power: heights[Math.floor(Math.random() * heights.length)]
+  };
+}
+
+function generateMachineShot() {
+  return generateGoalieGuess();
+}
+
+function getResult(shot, guess) {
+  return !(shot.direction === guess.direction && shot.height === guess.height && shot.power === guess.power);
+}
+
+function endGame() {
+  document.getElementById('status').innerText = `Juego terminado. Puntuación: Jugador ${playerScore} - ${opponentScore} Oponente`;
+  document.getElementById('shooting-controls').style.display = 'none';
+}
